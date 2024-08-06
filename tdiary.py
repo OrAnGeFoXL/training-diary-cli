@@ -1,5 +1,5 @@
 import os
-
+import csv
 
 t_width, _ = os.get_terminal_size()
 
@@ -66,10 +66,33 @@ def print_train(data):
 
 
 
-def main():
-    print_row('12.01.23', 30, 10)
-    print_row('13.01.23', 20, 40)
+def print_plan(csvdata):
+    pass
 
+def read_csv(path):
+    with open(path, "r", newline="") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            print(f"{row['LEVEL']} {c[3]}{row['NAME']}{c[0]}")
+
+            levels = [
+                    "Начальный уровень: ",
+                    "Средний уровень  : ",
+                    "Высокий уровень  : "
+                    ]
+            
+            clmns = [row['LOW'], row['MED'], row['HIGH']]
+
+            for i in clmns:
+                ex, rep = str(i).split('x')
+                rep1 = '\x1b[41m' + rep + '\x1b[0m '
+                print(f"{levels[clmns.index(i)]} {rep1*int(ex)}") 
+
+def main():
+    #print_row('12.01.23', 30, 10)
+    #print_row('13.01.23', 20, 40)
+
+    read_csv("train_plans/pushups.csv")
 
 #if __name__ ==__main__:
 main()
