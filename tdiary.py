@@ -1,5 +1,6 @@
 import os
 import csv
+from simple_term_menu import TerminalMenu
 
 t_width, _ = os.get_terminal_size()
 
@@ -88,11 +89,21 @@ def read_csv(path):
                 rep1 = '\x1b[41m' + rep + '\x1b[0m '
                 print(f"{levels[clmns.index(i)]} {rep1*int(ex)}") 
 
+def main_menu():
+    list = ["Отжимания",
+            "Подтягивания",
+            "Приседания"
+            ]
+    term_menu = TerminalMenu(list)
+    menu_index = term_menu.show()
+    
+    return list[menu_index]
+
 def main():
     #print_row('12.01.23', 30, 10)
     #print_row('13.01.23', 20, 40)
-
-    read_csv("train_plans/pushups.csv")
-
+    main_menu()
+    #read_csv("train_plans/pushups.csv")
+    #read_csv("train_plans/squads.csv")
 #if __name__ ==__main__:
 main()
