@@ -1,6 +1,6 @@
 from simple_term_menu import TerminalMenu
 from datetime import datetime, date
-
+import csv
 ex_list = [
         "Отжимания",
         "Приседания",
@@ -13,19 +13,53 @@ colors = {
         'blue': '\033[94m',
         'end': '\033[0m'
     }
+
+#https://habr.com/ru/companies/macloud/articles/558316/ 
 calendar_colours = {
-        'plan':         #blue text 
-        'succes_plan':  #green bg
-        'fail_plan'     #red bg
-        'unplanned':    #yellow bg
+        'plan': '\033[0;34m' ,         #blue text 
+        'success_plan': '\033[0;30;42m' , #green bg
+        'fail_plan': '\033[0;30;41m',     #red bg
+        'unplanned': '\033[0;30;43m'      #yellow bg
+        }
+
+train_data_sample = {
+        'plan': [15, 25] ,      
+        'success_plan': [5, 10] ,
+        'fail_plan': [1, 3],    
+        'unplanned': [6, 7]      
         }
 
 import calendar
 from calendar import monthrange
 
+def get_train_days():
+
+    with open('user_data/main_diary.csv', 'r') as f:
+        data = csv.DictReader(f)
+        
+        train_days = [int(row['DATE'][:2]) for row in data]
+        print(train_days) 
+        
+    return train_days    
+
+
 def calendar_t():    
     text_calendar = calendar.TextCalendar()
     text_calendar.prmonth(2024,1)
+
+def day_formater(day, colour):
+
+    if day < 10:
+        day = ' ' + str(day)
+    else:
+        day = str(day)
+
+    if colour == 'default':
+        f_day = day
+    else:
+        f_day = calendar_colours[colour]+day+colors['end']
+
+    return f_day
 
 def month_str(year=2024,month=8):
 
@@ -60,10 +94,10 @@ def month_str(year=2024,month=8):
     return weeks
 
 
-def print_month(weeks, colorlist):
+def print_month(weeks, train_data):
     days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
     header = '' 
-    delimeter = ' '
+    delimeter = ' ' #пробел
 
     for day in days:
         header =header + delimeter + day + delimeter
@@ -78,23 +112,24 @@ def print_month(weeks, colorlist):
         week_str = ''
         for day in week:
 
-            if day in colorlist:
-                if day < 10:
-                    day = ' ' + str(day)
-                else:
-                    day = str(day)
+            if day in train_data['plan']:
+                day = day_formater(day, 'plan')
 
-                week_str = week_str + delimeter + colors['red'] + day + colors['end'] + delimeter
+            elif day in train_data['unplanned']:
+                day = day_formater(day, 'unplanned')
+
+            elif day in train_data['fail_plan']:
+                day = day_formater(day, 'fail_plan')
+
+            elif day in train_data['success_plan']:
+                day = day_formater(day, 'success_plan')
 
             elif day ==0:
-                week_str = week_str + ' '*4
+                day = '  ' #двойной пробел
 
             else:
-                if day < 10:
-                    day = ' ' + str(day)
-                else:
-                    day = str(day)
-                week_str = week_str + delimeter + day +delimeter
+                day = day_formater(day,'default')
+            week_str = week_str + delimeter + day + delimeter
         print(week_str)
 
 
@@ -128,5 +163,6 @@ def main_menu():
 
 #calendar_t()
 #main_menu()
+get_train_days()
 a = month_str()
-print_month(a, [10, 21, 1])
+print_month(a, train_data_sample)
