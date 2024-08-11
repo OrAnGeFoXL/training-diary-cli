@@ -1,6 +1,8 @@
 import os
 import csv
 from simple_term_menu import TerminalMenu
+from datetime import datetime, timedelta
+
 
 t_width, _ = os.get_terminal_size()
 
@@ -66,6 +68,32 @@ def print_train(data):
         date_ln = 0
 
 
+def get_ex_list():
+
+    ex_list = os.listdir('train_plans')
+    ex_list = [i[:-4] for i in ex_list if '.csv' in i ]
+
+    return ex_list
+
+def add_train_data():
+
+    print('Выберите упражнение:')
+    ex = get_ex_list()
+    menu = TerminalMenu(ex)   
+    ex_data = ex[menu.show()]
+
+    print('Введите уровень упражнения')
+    lvl = input()
+
+    print('Введите дату')
+    last_date = [(datetime.today() - timedelta(days=i)).strftime('%d.%m.%Y') for i in range(7)]
+    menu = TerminalMenu(last_date)
+    date = last_date[menu.show()]
+    
+    #TODO Добавить автоматический подсчет количества подходов
+    print('Введите количество повторений в первом подходе')
+    reps =input()
+
 
 def print_plan(csvdata):
     pass
@@ -107,3 +135,4 @@ def main():
     #read_csv("train_plans/squads.csv")
 #if __name__ ==__main__:
 main()
+add_train_data()
