@@ -13,7 +13,12 @@ colors = {
         'blue': '\033[94m',
         'end': '\033[0m'
     }
-
+calendar_colours = {
+        'plan':         #blue text 
+        'succes_plan':  #green bg
+        'fail_plan'     #red bg
+        'unplanned':    #yellow bg
+        }
 
 import calendar
 from calendar import monthrange
